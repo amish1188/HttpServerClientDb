@@ -10,14 +10,14 @@ public class HttpClientTest {
 
     @Test
     void shouldReturnStatusCode() throws IOException {
-        HttpClient client = new HttpClient("urlecho.appspot.com", "/echo");
+        HttpClient client = new HttpClient("urlecho.appspot.com", 80, "/echo");
         HttpClientResponse response = client.executeRequest();
         assertEquals(200, response.getStatusCode());
     }
 
     @Test
     void shouldReturnFailStatusCode() throws IOException {
-        HttpClient client = new HttpClient("urlecho.appspot.com", "/echo?status=401");
+        HttpClient client = new HttpClient("urlecho.appspot.com", 80, "/echo?status=401");
         HttpClientResponse response = client.executeRequest();
         assertEquals(401,response.getStatusCode());
     }
