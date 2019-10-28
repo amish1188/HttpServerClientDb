@@ -22,4 +22,18 @@ public class HttpClientTest {
         assertEquals(401,response.getStatusCode());
     }
 
+    @Test
+    void shouldReadContentLength() throws IOException {
+        HttpClient client = new HttpClient("urlecho.appspot.com", 80, "/echo?body=12345678");
+        HttpClientResponse response = client.executeRequest();
+        assertEquals(8,response.getContentLength());
+    }
+
+    @Test
+    void shouldReadBody() throws IOException {
+        HttpClient client = new HttpClient("urlecho.appspot.com", 80, "/echo?body=HiKutas");
+        HttpClientResponse response = client.executeRequest();
+        assertEquals("HiKutas",response.getBody());
+    }
+
 }
