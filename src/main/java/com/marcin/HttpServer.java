@@ -6,21 +6,26 @@ import java.net.Socket;
 
 public class HttpServer {
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(8080);
+            try(ServerSocket serverSocket = new ServerSocket(8080)) {
+                while(true) {
+                    Socket socket = serverSocket.accept();
+                    String line;
+                    while(!(line= readLine(socket)).isEmpty()) {
+                        System.out.println("Line: " + line);
+                    }
 
-        Socket socket = serverSocket.accept();
-        String line;
-        while(!(line= readLine(socket)).isEmpty()) {
-            System.out.println("Line: " + line);
-        }
-        System.out.println("Done");
+                    System.out.println("Done");
 
-        socket.getOutputStream().write("HTTP/1.1 200 OK\r\n".getBytes());
-        socket.getOutputStream().write("Content-Type: text/html; charset=utf-8\r\n".getBytes());
-        socket.getOutputStream().write("Content-Length: 12\r\n".getBytes());
-        socket.getOutputStream().write("Connection: close\r\n".getBytes());
-        socket.getOutputStream().write("\r\n".getBytes());
-        socket.getOutputStream().write("Hello World!\r\n".getBytes());
+                    socket.getOutputStream().write("HTTP/1.1 200 OK\r\n".getBytes());
+                    socket.getOutputStream().write("Content-Type: text/html; charset=utf-8\r\n".getBytes());
+                    socket.getOutputStream().write("Content-Length: 12\r\n".getBytes());
+                    socket.getOutputStream().write("Connection: close\r\n".getBytes());
+                    socket.getOutputStream().write("\r\n".getBytes());
+                    socket.getOutputStream().write("Hello World!\r\n".getBytes());
+                }
+            }
+
+
     }
 
     private static String readLine(Socket socket) throws IOException {
