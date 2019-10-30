@@ -11,16 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HttpServerTest {
 
-
-
-     private HttpServer server;
+    private HttpServer server;
 
     @BeforeEach
     void setUp() throws IOException {
         server = new HttpServer(0);
         server.startServer();
     }
-
 
     @Test
     void shouldReturn200() throws IOException {
@@ -59,39 +56,4 @@ public class HttpServerTest {
         HttpClientResponse response = client.executeRequest();
         assertEquals("Hello Kristiania", response.getBody());
     }
-
-
-    /*
-    @Test
-    void shouldReturnFailStatusCode() throws IOException {
-
-        HttpClient client = new HttpClient("localhost", server.getActualPort(), "/echo?status=401");
-        HttpClientResponse response = client.executeRequest();
-        assertEquals(401,response.getStatusCode());
-    }
-
-    @Test
-    void shouldReturnRequestedHeader() throws IOException {
-        HttpClient client = new HttpClient("localhost", server.getActualPort(), "/echo?Location=http://example.com");
-        HttpClientResponse response = client.executeRequest();
-        assertEquals(200,response.getStatusCode());
-        assertEquals("http://example.com",response.getHeader("Location"));
-    }
-
-    @Test
-    void shouldReturnRequestedBody() throws IOException {
-        HttpClient client = new HttpClient("localhost", server.getActualPort(), "/echo?body=HelloKutas");
-        HttpClientResponse response = client.executeRequest();
-        assertEquals("HelloKutas",response.getBody());
-    }
-
-    @Test
-    void shouldReturnFileFromDisk() throws IOException {
-        Files.writeString(Paths.get("target/mytestfile.txt"), "Hello Kristiania");
-        server.setFileLocation("target");
-        HttpClient client = new HttpClient("localhost", server.getActualPort(),"/mytestfile.txt");
-        HttpClientResponse response = client.executeRequest();
-        assertEquals("Hello Kristiania", response.getBody());
-    } */
-
 }

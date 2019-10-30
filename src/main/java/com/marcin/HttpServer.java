@@ -1,7 +1,5 @@
 package com.marcin;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,9 +12,14 @@ public class HttpServer {
     private ServerSocket serverSocket;
     private String fileLocation;
 
+    private HttpController defaultController = new FileHttpController(this);
+
+    private Map <String, HttpController> controllers = new HashMap<>();
+
     public HttpServer(int port) throws IOException {
         this.port = port;
         serverSocket = new ServerSocket(port);
+        controllers.put("/", new EchoHttpController());
 
     }
 
@@ -58,37 +61,10 @@ public class HttpServer {
                 String requestPath = questionPos == -1 ? requestTarget : requestTarget.substring(0, questionPos);
                 Map<String, String> queryParameters = parseQueryParameters(requestTarget);
 
-                if(requestPath.equals("/")) {
-                    String status = queryParameters.getOrDefault("status", "200");
-                    String location = queryParameters.getOrDefault("Location", null);
-                    String body = queryParameters.getOrDefault("body", "Hello World");
+                controllers
+                        .getOrDefault(requestPath, defaultController)
+                        .handle(requestPath, socket.getOutputStream(), queryParameters);
 
-                    socket.getOutputStream().write(("HTTP/1.1 " + status + " OK\r\n" +
-                            "Content-Type: text/html\r\n" +
-                            "Content-Length: " + body.length() + "\r\n" +
-                            "Connection: close\r\n" +
-                            (location != null ? "Location: " + location + "\r\n" : "") +
-                            "\r\n" +
-                            body).getBytes());
-                    socket.getOutputStream().flush();
-
-                } else {
-                    File file= new File(fileLocation + requestPath);
-                    if(file.isDirectory()) {
-                        file = new File(file, "index.html");
-                    }
-                    if(file.exists()) {
-                        long length = file.length();
-                        socket.getOutputStream().write(("HTTP/1.1 200 OK\r\n" +
-                                            "Content-Length: " + length + "\r\n" +
-                                            "Connection: close\r\n" +
-                                            "\r\n").getBytes());
-                        // loading body to the http package, under the header
-                        try(FileInputStream fileInputStream = new FileInputStream(file)) {
-                            fileInputStream.transferTo(socket.getOutputStream());
-                        }
-                    }
-                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -117,6 +93,11 @@ public class HttpServer {
     public void setFileLocation(String fileLocation) {
         this.fileLocation = fileLocation;
     }
+
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
 }
 
 

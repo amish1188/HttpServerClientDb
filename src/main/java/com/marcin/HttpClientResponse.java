@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class HttpClientResponse {
+
     private Socket socket;
     private String statusLine;
     private Map<String, String> headers = new HashMap<>();

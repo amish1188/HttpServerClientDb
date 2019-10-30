@@ -35,5 +35,4 @@ public class HttpClientTest {
         HttpClientResponse response = client.executeRequest();
         assertEquals("HiKutas",response.getBody());
     }
-
 }
