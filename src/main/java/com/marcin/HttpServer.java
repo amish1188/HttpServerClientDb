@@ -32,6 +32,7 @@ public class HttpServer {
 
     private void run() {
         while (true) {
+            // this is a request line made by the client
             try (Socket socket = serverSocket.accept()) {
                 StringBuilder line = new StringBuilder();
                 String requestLine = null;
@@ -51,35 +52,43 @@ public class HttpServer {
                     line.append((char) c);
                 }
 
+                //this is request target which means anything after '?' or just main domain
                 String requestTarget = requestLine.split(" ")[1];
-
                 int questionPos = requestTarget.indexOf("?");
                 String requestPath = questionPos == -1 ? requestTarget : requestTarget.substring(0, questionPos);
-                if(!requestPath.equals("/echo")) {
-                    File file= new File(fileLocation + requestPath);
-                    socket.getOutputStream().write(("HTTP/1.1 200 OK\r\n" +
-                                        "Content-Length: " + file.length() + "\r\n" +
-                                        "Connection: close\r\n" +
-                                        "\r\n").getBytes());
-                    new FileInputStream(file).transferTo(socket.getOutputStream());
-                }
-
-
-
                 Map<String, String> queryParameters = parseQueryParameters(requestTarget);
 
-                String status = queryParameters.getOrDefault("status", "200");
-                String location = queryParameters.getOrDefault("Location", null);
-                String body = queryParameters.getOrDefault("body", "Hello World");
+                if(requestPath.equals("/")) {
+                    String status = queryParameters.getOrDefault("status", "200");
+                    String location = queryParameters.getOrDefault("Location", null);
+                    String body = queryParameters.getOrDefault("body", "Hello World");
 
-                socket.getOutputStream().write(("HTTP/1.1 " + status + " OK\r\n" +
-                        "Content-Type: text/html\r\n" +
-                        "Content-Length: " + body.length() + "\r\n" +
-                        "Connection: close\r\n" +
-                        (location != null ? "Location: " + location + "\r\n" : "") +
-                        "\r\n" +
-                        body).getBytes());
-                socket.getOutputStream().flush();
+                    socket.getOutputStream().write(("HTTP/1.1 " + status + " OK\r\n" +
+                            "Content-Type: text/html\r\n" +
+                            "Content-Length: " + body.length() + "\r\n" +
+                            "Connection: close\r\n" +
+                            (location != null ? "Location: " + location + "\r\n" : "") +
+                            "\r\n" +
+                            body).getBytes());
+                    socket.getOutputStream().flush();
+
+                } else {
+                    File file= new File(fileLocation + requestPath);
+                    if(file.isDirectory()) {
+                        file = new File(file, "index.html");
+                    }
+                    if(file.exists()) {
+                        long length = file.length();
+                        socket.getOutputStream().write(("HTTP/1.1 200 OK\r\n" +
+                                            "Content-Length: " + length + "\r\n" +
+                                            "Connection: close\r\n" +
+                                            "\r\n").getBytes());
+                        // loading body to the http package, under the header
+                        try(FileInputStream fileInputStream = new FileInputStream(file)) {
+                            fileInputStream.transferTo(socket.getOutputStream());
+                        }
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
