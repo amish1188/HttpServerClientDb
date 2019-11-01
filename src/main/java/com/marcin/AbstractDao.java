@@ -15,12 +15,15 @@ public abstract class AbstractDao<Entity> {
         this.dataSource = dataSource;
     }
 
-    public void insert(Entity  q, String sql) throws SQLException {
+    public long insert(Entity  q, String sql) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(
-                    sql)) {
+            try (PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 mapToStatement(q, statement);
                 statement.executeUpdate();
+
+                ResultSet generatedKey = statement.getGeneratedKeys();
+                generatedKey.next();
+                return generatedKey.getLong("id");
             }
         }
     }
@@ -42,4 +45,19 @@ public abstract class AbstractDao<Entity> {
     }
 
     protected abstract Entity  mapFromResultSet(ResultSet rs) throws SQLException;
+
+    public Entity retrieve(Long id, String sql) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1,id);
+                try (ResultSet rs = statement.executeQuery()) {
+                    if(rs.next()) {
+                        return mapFromResultSet(rs);
+                    } else {
+                    return null;
+                    }
+                }
+            }
+        }
+    }
 }

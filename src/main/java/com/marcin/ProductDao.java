@@ -12,13 +12,13 @@ public class ProductDao extends AbstractDao<Product> {
         super(dataSource);
     }
 
-    public void insert(Product product) throws SQLException {
-        insert(product, "insert into PRODUCTS (name) values (?)");
+    public Product retrieve(Long id) throws SQLException {
+        return retrieve(id, "select * from PRODUCTS where id = ?");
     }
 
-    @Override
-    protected void mapToStatement(Product product, PreparedStatement statement) throws SQLException {
-        statement.setString(1,product.getName());
+    public void insert(Product product) throws SQLException {
+        long id = insert(product, "insert into PRODUCTS (name) values (?)");
+        product.setId(id);
     }
 
     public List<Product> listAll() throws SQLException {
@@ -26,9 +26,17 @@ public class ProductDao extends AbstractDao<Product> {
     }
 
     @Override
+    protected void mapToStatement(Product product, PreparedStatement statement) throws SQLException {
+        statement.setString(1,product.getName());
+    }
+
+    @Override
     protected Product mapFromResultSet(ResultSet rs) throws SQLException {
         Product product = new Product();
+        product.setId(rs.getLong("id"));
         product.setName(rs.getString("name"));
         return product;
     }
+
+
 }
