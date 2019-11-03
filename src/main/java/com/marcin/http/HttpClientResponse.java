@@ -1,11 +1,11 @@
-package com.marcin;
+package com.marcin.http;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-class HttpClientResponse {
+public class HttpClientResponse {
 
     private Socket socket;
     private String statusLine;

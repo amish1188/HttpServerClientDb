@@ -1,5 +1,7 @@
 package com.marcin;
 
+import com.marcin.webshop.Product;
+import com.marcin.webshop.ProductDao;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeEach;

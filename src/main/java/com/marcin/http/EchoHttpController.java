@@ -1,4 +1,4 @@
-package com.marcin;
+package com.marcin.http;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,7 +6,7 @@ import java.util.Map;
 
 class EchoHttpController implements HttpController {
     @Override
-    public void handle(String requestPath, OutputStream outputStream, Map<String, String> queryParameters) throws IOException {
+    public void handle(String requestPath, Map<String, String> queryParameters, OutputStream outputStream) throws IOException {
         String status = queryParameters.getOrDefault("status", "200");
         String location = queryParameters.getOrDefault("Location", null);
         String body = queryParameters.getOrDefault("body", "Hello World");

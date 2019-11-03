@@ -1,5 +1,7 @@
 package com.marcin;
 
+import com.marcin.http.HttpClient;
+import com.marcin.http.HttpClientResponse;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

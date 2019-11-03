@@ -1,4 +1,4 @@
-package com.marcin;
+package com.marcin.http;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,7 +11,6 @@ public class HttpServer {
     private int port;
     private ServerSocket serverSocket;
     private String fileLocation;
-
     private HttpController defaultController = new FileHttpController(this);
 
     private Map <String, HttpController> controllers = new HashMap<>();
@@ -19,7 +18,6 @@ public class HttpServer {
     public HttpServer(int port) throws IOException {
         this.port = port;
         serverSocket = new ServerSocket(port);
-        controllers.put("/", new EchoHttpController());
 
     }
 
@@ -61,9 +59,10 @@ public class HttpServer {
                 String requestPath = questionPos == -1 ? requestTarget : requestTarget.substring(0, questionPos);
                 Map<String, String> queryParameters = parseQueryParameters(requestTarget);
 
+
                 controllers
                         .getOrDefault(requestPath, defaultController)
-                        .handle(requestPath, socket.getOutputStream(), queryParameters);
+                        .handle(requestPath, queryParameters, socket.getOutputStream());
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -98,6 +97,9 @@ public class HttpServer {
         return fileLocation;
     }
 
+    public void addController(String requestPath, HttpController controller) {
+        controllers.put(requestPath, controller);
+    }
 }
 
 

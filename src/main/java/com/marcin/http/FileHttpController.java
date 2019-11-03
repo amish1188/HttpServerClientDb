@@ -1,4 +1,6 @@
-package com.marcin;
+package com.marcin.http;
+
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,9 +15,12 @@ class FileHttpController implements HttpController {
         this.httpServer = httpServer;
     }
 
+    private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(FileHttpController.class);
+
     @Override
-    public void handle(String requestPath, OutputStream outputStream, Map<String, String> queryParameters) throws IOException {
+    public void handle(String requestPath, Map<String, String> queryParameters, OutputStream outputStream) throws IOException {
         File file= new File(httpServer.getFileLocation() + requestPath);
+        Logger.debug("Requesting file {}", file);
         if(file.isDirectory()) {
             file = new File(file, "index.html");
         }

@@ -1,4 +1,4 @@
-package com.marcin;
+package com.marcin.http;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -19,7 +19,7 @@ public class HttpClient {
         new HttpClient("urlecho.appspot.com", 80, "/echo?body=Hello%20world!").executeRequest();
     }
 
-    HttpClientResponse executeRequest() throws IOException {
+    public HttpClientResponse executeRequest() throws IOException {
         try(Socket socket = new Socket(host, port)) {
 
             socket.getOutputStream().write(("GET " + requestTarget + " HTTP/1.1 \r\n").getBytes());

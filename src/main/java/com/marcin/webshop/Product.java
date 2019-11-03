@@ -1,4 +1,4 @@
-package com.marcin;
+package com.marcin.webshop;
 
 public class Product {
 

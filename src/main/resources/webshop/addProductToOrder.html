@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add product to order</title>
+</head>
+<body>
+<h1>Add product to order</h1>
+
+<select name="" id="products"></select>
+
+
+</body>
+<script>
+    fetch("/api/products")
+        .then(function(result) {
+            return result.text();
+        })
+        .then(function(text) {
+            document.getElementById("products").innerHTML = text;
+        });
+</script>
+</html>

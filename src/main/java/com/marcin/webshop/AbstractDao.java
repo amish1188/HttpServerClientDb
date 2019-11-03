@@ -1,4 +1,4 @@
-package com.marcin;
+package com.marcin.webshop;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

@@ -1,5 +1,8 @@
 package com.marcin;
 
+import com.marcin.http.HttpClient;
+import com.marcin.http.HttpClientResponse;
+import com.marcin.http.HttpServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
